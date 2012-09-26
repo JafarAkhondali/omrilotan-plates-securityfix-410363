@@ -5,7 +5,13 @@
 		<script src='../Trunk/Stencil.js'></script>
 	</head>
 	<body>
-		<div id='wrap'></div>
+		<h1>test bed</h1>
+		<h3>list example</h3>
+		<div id='list_example'></div>
+		<h3>include example</h3>
+		<div id='include_example'></div>
+		<h3>convert data example</h3>
+		<div id='convert_example'></div>
 		<script>
 			var dataitem = {
 				listData: [
@@ -51,7 +57,36 @@
 					}
 				]
 			};
-			Stencil.append('#wrap', 'list', dataitem);
+			Stencil.append('#list_example', 'list', dataitem);
+			
+			var dataitem = {
+				text_one: 'I am one template',
+				text_two : 'I am another template',
+				turnRed: function (element) {
+					element.style.color = 'red';
+				}
+			};
+			Stencil.append('#include_example', 'one_template', dataitem);
+			
+			var dataitem = {
+				listData: [
+					{
+						time: new Date(),
+						showMe: true
+					},
+					{
+						time: new Date(),
+						showMe: false
+					}
+				],
+				convertTime: function (dataitem) {
+					return {
+						time: dataitem.time.getTime(),
+						showMe: dataitem.showMe
+					}
+				}
+			};
+			Stencil.append('#convert_example', 'converted_template', dataitem);
 		</script>
 	</body>
 </html>

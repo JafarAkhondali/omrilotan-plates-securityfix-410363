@@ -1,23 +1,21 @@
 /*!
  * Stencil JavaScript Templating Library v1.0.2
- *
+ * https://github.com/watermelonbunny/Stencil.git
  * Watermelonbunny
  */
-if (Stencil === undefined) {
-    var Stencil = {};
-}
-Stencil = (function () {
+var Stencil = function (templatesFileLocation, options) {
+	options = options || {};
     var _templates = {},
-		_templatesFileLocation = 'Templates.html',
-		_templateTagName = 'template',
+		_templatesFileLocation = templatesFileLocation || 'Templates.html',
+		_templateTagName = options.templateTagName || 'template',
         _constants = {
-            ifAttribute: 'sys-if',
-            listenerAttribute: 'sys-listener',
-            dataAttribute: 'sys-data',
-            templateAttribute: 'sys-template',
-            includeAttribute: 'sys-include',
-            convertdataAttribute: 'sys-convertdata',
-            codeafterAttribute: 'sys-codeafter'
+            ifAttribute: options.ifAttribute || 'sys-if',
+            listenerAttribute: options.listenerAttribute || 'sys-listener',
+            dataAttribute: options.dataAttribute || 'sys-data',
+            templateAttribute: options.templateAttribute || 'sys-template',
+            includeAttribute: options.includeAttribute || 'sys-include',
+            convertdataAttribute: options.convertdataAttribute || 'sys-convertdata',
+            handleelementAttribute: options.handleelementAttribute || 'sys-handleelement'
         },
 		// functions
         _pattern = function () {
@@ -185,8 +183,9 @@ Stencil = (function () {
 			var iterate = 0,
 				ifAttribute = _getConstant('ifAttribute'),
 				listenerAttribute = _getConstant('listenerAttribute'),
-				codeafterAttribute = _getConstant('codeafterAttribute'),
-				includeAttribute = _getConstant('includeAttribute');
+				handleelementAttribute = _getConstant('handleelementAttribute'),
+				includeAttribute = _getConstant('includeAttribute'),
+				convertdataAttribute = _getConstant('convertdataAttribute');
 			if (typeof node.attributes === 'object' && node.attributes !== null) {
 				iterate = node.attributes.length;
 				while (iterate--) {
@@ -202,8 +201,8 @@ Stencil = (function () {
 							_addHandler(node, node.getAttribute(listenerAttribute), dataitem);
 							node.removeAttribute(listenerAttribute);
 							break;
-						case (codeafterAttribute):
-							codeafter = dataitem[node.getAttribute(codeafterAttribute)]
+						case (handleelementAttribute):
+							codeafter = dataitem[node.getAttribute(handleelementAttribute)]
 							if (typeof codeafter === 'function') {
 								codeafter(node);
 							}
@@ -313,4 +312,6 @@ Stencil = (function () {
 			return this.append(parent, templateName, dataitem);
 		}
 	};
-})();
+};
+Stencil = Stencil();
+// Stencil = Stencil('Templates.html', { templateTagName: 'template' });
