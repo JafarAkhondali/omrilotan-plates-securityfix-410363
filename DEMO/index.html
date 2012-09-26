@@ -8,15 +8,50 @@
 		<div id='wrap'></div>
 		<script>
 			var dataitem = {
-				text: 'test text',
-				clickHanlder: function (evt) {
-					alert('click');
-					evt = evt || window.event;
-					var target = evt.target || evt.srcElement;
-					target.style.color = 'red';
-				}
+				listData: [
+					{
+						text: 'list item 1',
+						clickHanlder: function (evt) {
+							evt = evt || window.event;
+							var target = evt.target || evt.srcElement;
+							target.style.color = 'red';
+						}
+					},
+					{
+						text: 'list item 2',
+						clickHanlder: function (evt) {
+							evt = evt || window.event;
+							var target = evt.target || evt.srcElement;
+							target.style.color = 'blue';
+						}
+					},
+					{
+						text: 'list item 3',
+						clickHanlder: function (evt) {
+							evt = evt || window.event;
+							var target = evt.target || evt.srcElement;
+							target.style.color = 'green';
+						}
+					},
+					{
+						text: 'list item 4',
+						clickHanlder: function (evt) {
+							evt = evt || window.event;
+							var target = evt.target || evt.srcElement;
+							target.style.color = 'brown';
+						}
+					},
+					{
+						text: 'list item 5',
+						clickHanlder: function (evt) {
+							evt = evt || window.event;
+							var target = evt.target || evt.srcElement;
+							target.style.color = 'purple';
+						}
+					}
+				]
 			};
-			Stencil.append('#wrap', 'test', dataitem);
+			Stencil.append('#wrap', 'list', dataitem);
 		</script>
 	</body>
 </html>

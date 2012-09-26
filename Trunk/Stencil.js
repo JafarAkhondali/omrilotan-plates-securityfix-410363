@@ -10,7 +10,6 @@ Stencil = (function () {
     var _templates = {},
 		_templatesFileLocation = 'Templates.html',
 		_templateTagName = 'template',
-        _pattern = /\{\{.*\}\}/gmi,
         _constants = {
             ifAttribute: 'sys-if',
             listenerAttribute: 'sys-listener',
@@ -21,6 +20,9 @@ Stencil = (function () {
             codeafterAttribute: 'sys-codeafter'
         },
 		// functions
+        _pattern = function () {
+			return /\{\{.*\}\}/gmi;
+		},
 		_trim = function (string) {
 			return string.replace(/(^[\s]+|[\s]+$)/g, '');
 		},
@@ -130,10 +132,10 @@ Stencil = (function () {
             return _templates[name].cloneNode(true);
         },
         _testPattern = function (string) {
-            return _pattern.test(string);
+            return _pattern().test(string);
         },
         _clearPattern = function (string) {
-            return string.replace(_pattern, '');
+            return string.replace(_pattern(), '');
         },
         _getConstant = function (name) {
             return _constants[name];

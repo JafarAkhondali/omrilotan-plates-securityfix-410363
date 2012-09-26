@@ -1,3 +1,8 @@
-<template name="test">
-	<div sys-listener="click::clickHanlder">{{ text }}</div>
+<template name="list">
+	<ol>
+		<div sys-template="list_item" sys-data="listData"></div>
+	</ol>
+</template>
+<template name="list_item">
+	<li sys-listener="click::clickHanlder">{{ text }}</li>
 </template>
