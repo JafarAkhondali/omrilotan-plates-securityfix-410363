@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
+		<script src='../Trunk/Stencil.js'></script>
+	</head>
+	<body>
+		<div id='wrap'></div>
+		<script>
+			var dataitem = {
+				text: 'test text',
+				clickHanlder: function (evt) {
+					alert('click');
+					evt = evt || window.event;
+					var target = evt.target || evt.srcElement;
+					target.style.color = 'red';
+				}
+			};
+			Stencil.append('#wrap', 'test', dataitem);
+		</script>
+	</body>
+</html>
