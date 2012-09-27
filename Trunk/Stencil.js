@@ -1,6 +1,6 @@
 /*!
  * Stencil JavaScript Templating Library v1.0.2
- * https://github.com/watermelonbunny/Stencil.git
+ * git://github.com/watermelonbunny/Stencil.git
  * Watermelonbunny
  */
 var Stencil = function (templatesFileLocation, options) {

@@ -63,7 +63,9 @@
 				text_one: 'I am one template',
 				text_two : 'I am another template',
 				turnRed: function (element) {
-					element.style.color = 'red';
+					setTimeout(function () {
+						element.style.color = 'red';
+					}, 1000);
 				}
 			};
 			Stencil.append('#include_example', 'one_template', dataitem);
