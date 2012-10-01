@@ -185,8 +185,13 @@ var Stencil = function (templatesFileLocation, options) {
 				listenerAttribute = _getConstant('listenerAttribute'),
 				handleelementAttribute = _getConstant('handleelementAttribute'),
 				includeAttribute = _getConstant('includeAttribute'),
-				convertdataAttribute = _getConstant('convertdataAttribute');
+				convertdataAttribute = _getConstant('convertdataAttribute'),
+				convertdata;
 			if (typeof node.attributes === 'object' && node.attributes !== null) {
+				convertdata = dataitem[node.getAttribute(_getConstant('convertdataAttribute'))];
+				if (typeof convertdata === 'function') {
+					dataitem = _convertAndMergeData(dataitem, convertdata(dataitem));
+				}
 				iterate = node.attributes.length;
 				while (iterate--) {
 					switch (node.attributes[iterate].name) {
@@ -254,6 +259,12 @@ var Stencil = function (templatesFileLocation, options) {
 			}
 			return element;
 		},
+		_convertAndMergeData = function (dataitem, convertdata) {
+			for (var key in convertdata) {
+				dataitem[key] = convertdata[key];
+			}
+			return dataitem;
+		},
 		_createCycle = function (cycleElement, dataitem) {
 			if (typeof dataitem !== 'object') {
 				return false;
@@ -273,8 +284,9 @@ var Stencil = function (templatesFileLocation, options) {
 				dataitem = {};
 			// check if it's as Array
 			for (var i = 0, loops = dataArray.length; i < loops; i++) {
-				dataitem = typeof convertdata === 'function' ? convertdata(dataArray[i]) : dataArray[i];
-				fragment.appendChild(Stencil.get(template, dataitem));
+				convertdata = typeof convertdata === 'function' ? convertdata(dataArray[i]) : dataArray[i];
+				convertedData = _convertAndMergeData(dataArray[i], convertdata);
+				fragment.appendChild(Stencil.get(template, convertedData));
 			}
 			return fragment;
 		};

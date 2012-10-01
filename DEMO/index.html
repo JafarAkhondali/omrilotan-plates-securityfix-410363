@@ -66,9 +66,17 @@
 					setTimeout(function () {
 						element.style.color = 'red';
 					}, 1000);
+				},
+				convertData: function (dataitem) {
+					return dataitem.text_one += '!';
 				}
 			};
 			Stencil.append('#include_example', 'one_template', dataitem);
+			
+			var toDoubleDigit = function (num) {
+				num = num + '';
+				return num.length < 2 ? '0' + num : num;
+			};
 			
 			var dataitem = {
 				listData: [
@@ -83,8 +91,7 @@
 				],
 				convertTime: function (dataitem) {
 					return {
-						time: dataitem.time.getTime(),
-						showMe: dataitem.showMe
+						time: toDoubleDigit(dataitem.time.getHours()) + ':' + toDoubleDigit(dataitem.time.getMinutes())
 					}
 				}
 			};

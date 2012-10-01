@@ -14,7 +14,7 @@ include another template as a part, single dataitem
 handleelement handles the element after it is generated
 -->
 <template name="one_template">
-	<div>{{ text_one }}</div>
+	<div sys-convertdata="convertData">{{ text_one }}</div>
 	<div sys-include="another_template"></div>
 </template>
 <template name="another_template">
