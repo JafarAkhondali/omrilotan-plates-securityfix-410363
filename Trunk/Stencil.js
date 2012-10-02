@@ -9,19 +9,30 @@ var Stencil = function (templatesFileLocation, options) {
 		_templatesFileLocation = templatesFileLocation || 'Templates.html',
 		_templateTagName = options.templateTagName || 'template',
 		// functions
-        _getAttributeName = function (name) {
+		_checkNodeType = (function () {
+			var nodeTypes = typeof document.defaultView.Node === 'object' ? document.defaultView.Node : {
+				'ELEMENT_NODE': 1,
+				'TEXT_NODE': 3,
+				'DOCUMENT_FRAGMENT_NODE': 11
+			};
+			return function (node, nodeType) {
+				return typeof node.nodeType === 'number' && node.nodeType === nodeTypes[nodeType];
+			};
+		})(),
+        _getConstants = function (name) {
 			if (typeof name !== 'string') {
 				new Error('Stencil.js Error: Attribute name must be a string');
 				return undefined;
 			};
 			var constants = {
-				IF: 'sys-if',
-				LISTENER: 'sys-listener',
-				DATA: 'sys-data',
-				TEMPLATE: 'sys-template',
-				INCLUDE: 'sys-include',
-				CONVERT: 'sys-convertdata',
-				HANDLE: 'sys-handleelement'
+				'IF': 'sys-if',
+				'LISTENER': 'sys-listener',
+				'LISTENER_SEPERATOR': '::',
+				'DATA': 'sys-data',
+				'TEMPLATE': 'sys-template',
+				'INCLUDE': 'sys-include',
+				'CONVERT': 'sys-convertdata',
+				'HANDLE': 'sys-handleelement'
 			};
             return constants[name.toUpperCase()];
         },
@@ -31,19 +42,34 @@ var Stencil = function (templatesFileLocation, options) {
 		_trim = function (string) {
 			return string.replace(/(^[\s]+|[\s]+$)/g, '');
 		},
+		_removeCurlyBrackets = function (string) {
+			return string.replace(/\{\{( )*/gmi, '').replace(/( )*\}\}/gmi, '');
+		},
+		_stringToObject = function (string) {
+			var array = string.split('.'),
+				object = document.defaultView,
+				i = 0,
+				loops = array.length;
+			for(; i < loops; i++) {
+				object = object[array[i]];
+			}
+			return object;
+		},
 		_isDOMElement = function (element) {
 			var isDOMElement = false;
 			try {
 				isDOMElement = element instanceof HTMLElement;
 			} catch (e) {
 				isDOMElement = (typeof element === 'object' &&
-								(element.nodeType === 1) &&
+								_checkNodeType(element, 'ELEMENT_NODE') &&
 								(typeof element.style === 'object') &&
 								(typeof element.ownerDocument === 'object'));
 			}
 			return isDOMElement;
 		},
 		_addListener = (function () {
+			// use feature detection to determine which type of eventListener to apply
+			// event name can be a list style string (e.g. 'click,change')
 			if (typeof document.defaultView.addEventListener === 'function') {
 				return function (obj, evt, func) {
 					if (!_isDOMElement(obj) || typeof evt !== 'string' || typeof func !== 'function') {
@@ -128,39 +154,27 @@ var Stencil = function (templatesFileLocation, options) {
 			}
 		})(),
 		_getTemplate = function (name) {
-            if (typeof _templates[name] !== 'object' || // template object found
-                typeof _templates[name].nodeType !== 'number' ||
-                _templates[name].nodeType !== 1) { // template is a DOM element
+            if (_checkNodeType(_templates[name], 'ELEMENT_NODE') === false) {
                 new Error('Stencil.js Error: Template not found');
                 return false;
             }
-            return _templates[name].cloneNode(true);
-        },
-        _testPattern = function (string) {
-            return _pattern().test(string);
-        },
-        _clearPattern = function (string) {
-            return string.replace(_pattern(), '');
+            return _templates[name].cloneNode(true); // return a clone
         },
 		_create = function (templateName) {
 			var temporary = typeof templateName === 'string' ? _getTemplate(templateName) : templateName,
 				fragment = document.createDocumentFragment(),
 				children = temporary.childNodes;
+			// move all element children from 'temporary' (cloned template) to 'fragment'
+			// * Elements only (first generation children)
 			while (temporary.childNodes.length > 0) {
-				// move all element child nodes to the fragment
-				if (typeof temporary.childNodes[0] === 'object' && temporary.childNodes[0].nodeType === 1) {
-					// only element nodes transfer
+				if (typeof temporary.childNodes[0] === 'object' && _checkNodeType(temporary.childNodes[0], 'ELEMENT_NODE')) {
 					fragment.appendChild(temporary.childNodes[0]);
 				} else {
-					// all others are removed
 					temporary.removeChild(temporary.childNodes[0]);
 				}
 			}
-			temporary = null; // deallocate memory
+			temporary = null; // deallocate 'temporary'
 			return fragment;
-		},
-		_removeCurlyBrackets = function (string) {
-			return string.replace(/\{\{( )*/gmi, '').replace(/( )*\}\}/gmi, '');
 		},
 		_replaceKeys = function (string, dataitem) {
 			// replace in string key wrapped with double curley barckets and 0 or more whitespaces
@@ -178,7 +192,7 @@ var Stencil = function (templatesFileLocation, options) {
 				text = _replaceKeys(text, dataitem);
 			}
 			// remove remaining {{*}} strings
-			text = _clearPattern(text);
+			text = text.replace(_pattern(), '');
 			newNode = document.createTextNode(text);
 			node.parentNode.replaceChild(newNode, node);
 			return text;
@@ -187,37 +201,42 @@ var Stencil = function (templatesFileLocation, options) {
 			if (typeof node.attributes === 'object' && node.attributes !== null) {
 				var iterate = node.attributes.length,
 					attributeNames = {
-						'if': _getAttributeName('if'),
-						'listener': _getAttributeName('listener'),
-						'handle': _getAttributeName('handle'),
-						'include': _getAttributeName('include'),
-						'convert': _getAttributeName('convert'),
+						'if': _getConstants('if'),
+						'listener': _getConstants('listener'),
+						'handle': _getConstants('handle'),
+						'include': _getConstants('include'),
+						'convert': _getConstants('convert'),
 					},
 					convertdata = dataitem[node.getAttribute(attributeNames['convert'])];
 				if (typeof convertdata === 'function') {
+					// in case convert data action reqired, change dataitem accordingly
 					dataitem = _convertAndMergeData(dataitem, convertdata(dataitem));
+					node.removeAttribute(attributeNames['convert']);
+					iterate = node.attributes.length; // fix the attributes object
 				}
 				while (iterate--) {
 					switch (node.attributes[iterate].name) {
 						case (attributeNames['if']):
-							if (dataitem[_removeCurlyBrackets(node.getAttribute(attributeNames['if']))] === false) {
+							if (!dataitem[_removeCurlyBrackets(node.getAttribute(attributeNames['if']))]) {
+								// convert attribute to boolean; false == false || null || undefined || 0 || ''
 								node.parentNode.removeChild(node);
 							} else {
 								node.removeAttribute(attributeNames['if']);
 							}
 							break;
 						case (attributeNames['listener']):
-							_addHandler(node, node.getAttribute(attributeNames['listener']), dataitem);
+							_addHandler(node, _removeCurlyBrackets(node.getAttribute(attributeNames['listener'])), dataitem);
 							node.removeAttribute(attributeNames['listener']);
 							break;
 						case (attributeNames['handle']):
-							codeafter = dataitem[node.getAttribute(attributeNames['handle'])]
+							codeafter = dataitem[_removeCurlyBrackets(node.getAttribute(attributeNames['handle']))]
 							if (typeof codeafter === 'function') {
 								codeafter(node);
 							}
 							break;
 						case (attributeNames['include']):
-							node.appendChild(Stencil.get(node.getAttribute(attributeNames['include']), dataitem));
+							node.appendChild(Stencil.get(_removeCurlyBrackets(node.getAttribute(attributeNames['include'])), dataitem));
+							node.removeAttribute(attributeNames['include']);
 							break;
 						default:
 							_replaceNodeAttribute(node, node.attributes[iterate].name, dataitem);
@@ -228,12 +247,13 @@ var Stencil = function (templatesFileLocation, options) {
 			return node;
 		},
 		_addHandler = function (element, listenerString, dataitem) {
+			var listener_seperator = _getConstants('listener_seperator');
 			// break up listener to event and function
-			if (typeof listenerString !== 'string' || listenerString.indexOf('::') === -1 || typeof dataitem !== 'object') {
+			if (typeof listenerString !== 'string' || listenerString.indexOf(listener_seperator) === -1 || typeof dataitem !== 'object') {
 				return false;
 			}
-			var listenerArray = listenerString.split('::'),
-				func = typeof dataitem[listenerArray[1]] === 'function' ? dataitem[listenerArray[1]] : eval('window.' + listenerArray[1]); // TODO element.ownerDocument[name]
+			var listenerArray = listenerString.split(listener_seperator),
+				func = typeof dataitem[listenerArray[1]] === 'function' ? dataitem[listenerArray[1]] : _stringToObject(listenerArray[1]);
 			if (typeof func === 'function') {
 				_addListener(element, listenerArray[0], func);
 			}
@@ -244,14 +264,13 @@ var Stencil = function (templatesFileLocation, options) {
 		},
 		_nodeReplacements = function (element, dataitem) {
 			var i = element.childNodes.length;
-			if (element.nodeType === 3 && _testPattern(element.nodeValue)) { // textNode
-				// TEXT_NODE
+			if (_checkNodeType(element, 'TEXT_NODE') && _pattern().test(element.nodeValue)) {
 				_replaceNodeValue(element, dataitem);
 			} else {
-				if (element.nodeType === 1 && typeof element.getAttribute(_getAttributeName('data')) === 'string') {
+				if (_checkNodeType(element, 'ELEMENT_NODE') && typeof element.getAttribute(_getConstants('data')) === 'string') {
 					_createCycle(element, dataitem);
 				} else {
-					if (element.nodeType !== 11) {
+					if (_checkNodeType(element, 'DOCUMENT_FRAGMENT_NODE') === false) {
 						// is not fragment
 						_replaceNodeAttributes(element, dataitem);
 					}
@@ -273,9 +292,9 @@ var Stencil = function (templatesFileLocation, options) {
 			if (typeof dataitem !== 'object') {
 				return false;
 			}
-			var dataArray = dataitem[cycleElement.getAttribute(_getAttributeName('data'))],
-				template = cycleElement.getAttribute(_getAttributeName('template')),
-				convertdata = dataitem[cycleElement.getAttribute(_getAttributeName('convert'))],
+			var dataArray = dataitem[cycleElement.getAttribute(_getConstants('data'))],
+				template = cycleElement.getAttribute(_getConstants('template')),
+				convertdata = dataitem[cycleElement.getAttribute(_getConstants('convert'))],
 				parent = cycleElement.parentNode;
 			if (typeof dataArray.length === 'number') {
 				var frag = _createList(template, dataArray, convertdata);
@@ -296,8 +315,8 @@ var Stencil = function (templatesFileLocation, options) {
 		};
 	(function (templatesFileLocation) {
         var XHR = new XMLHttpRequest(),
-			templatesArray = [],
 			doc = document.implementation.createHTMLDocument('TemplatesDocument'),
+			templatesArray = [],
 			i = 0;
         XHR.open('GET', templatesFileLocation, false); // sync load
         XHR.setRequestHeader('Content-Type', 'text/html');
@@ -315,25 +334,25 @@ var Stencil = function (templatesFileLocation, options) {
         XHR.send();
     })(_templatesFileLocation);
     return {
-		get: function (templateName, dataitem, codeafter) {
-			if (typeof codeafter === 'function') {
-				return codeafter(_nodeReplacements(_create(templateName), dataitem));
-			} else {
-				return _nodeReplacements(_create(templateName), dataitem);
-			}
+		get: function (templateName, dataitem, runcode) {
+		    if (typeof runcode === 'function') {
+		        return runcode(_nodeReplacements(_create(templateName), dataitem));
+		    } else {
+		        return _nodeReplacements(_create(templateName), dataitem);
+		    }
 		},
-		append: function (parent, templateName, dataitem, codeafter) {
+		append: function (parent, templateName, dataitem, runcode) {
 			parent = typeof parent === 'string' ? document.querySelector(parent) : parent;
-			return parent.appendChild(this.get(templateName, dataitem));
+			return parent.appendChild(this.get(templateName, dataitem, runcode));
 		},
-		clearAndAppend: function (parent, templateName, dataitem, codeafter) {
+		clearAndAppend: function (parent, templateName, dataitem, runcode) {
 			parent = typeof parent === 'string' ? document.querySelector(parent) : parent;
 			parent.innerHTML = '';
-			return this.append(parent, templateName, dataitem);
+			return this.append(parent, templateName, dataitem, runcode);
 		}
 	};
 };
-Stencil = Stencil();
+Stencil = Stencil('Templates.html', { templateTagName: 'template' });
 /* IMPLEMENT:
  * Stencil = Stencil('Templates.html', { templateTagName: 'template' });
  */
