@@ -13,6 +13,7 @@
 		<h3>convert data example</h3>
 		<div id='convert_example'></div>
 		<script>
+// list example
 			var dataitem = {
 				listData: [
 					{
@@ -58,7 +59,7 @@
 				]
 			};
 			Stencil.append('#list_example', 'list', dataitem);
-			
+// include example
 			var dataitem = {
 				text_one: 'I am one template',
 				text_two : 'I am another template',
@@ -72,12 +73,7 @@
 				}
 			};
 			Stencil.append('#include_example', 'one_template', dataitem);
-			
-			var toDoubleDigit = function (num) {
-				num = num + '';
-				return num.length < 2 ? '0' + num : num;
-			};
-			
+// convert example
 			var dataitem = {
 				listData: [
 					{
@@ -90,6 +86,11 @@
 					}
 				],
 				convertTime: function (dataitem) {
+					// a function within the closure
+					var toDoubleDigit = function (num) {
+						num = num + '';
+						return num.length < 2 ? '0' + num : num;
+					};
 					return {
 						time: toDoubleDigit(dataitem.time.getHours()) + ':' + toDoubleDigit(dataitem.time.getMinutes())
 					}

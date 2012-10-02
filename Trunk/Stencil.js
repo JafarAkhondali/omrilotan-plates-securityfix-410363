@@ -1,5 +1,5 @@
 /*!
- * Stencil JavaScript Templating Library v1.0.2
+ * Stencil JavaScript Templating Library v1.0.3
  * git://github.com/watermelonbunny/Stencil.git
  * Watermelonbunny
  */
@@ -8,16 +8,23 @@ var Stencil = function (templatesFileLocation, options) {
     var _templates = {},
 		_templatesFileLocation = templatesFileLocation || 'Templates.html',
 		_templateTagName = options.templateTagName || 'template',
-        _constants = {
-            ifAttribute: options.ifAttribute || 'sys-if',
-            listenerAttribute: options.listenerAttribute || 'sys-listener',
-            dataAttribute: options.dataAttribute || 'sys-data',
-            templateAttribute: options.templateAttribute || 'sys-template',
-            includeAttribute: options.includeAttribute || 'sys-include',
-            convertdataAttribute: options.convertdataAttribute || 'sys-convertdata',
-            handleelementAttribute: options.handleelementAttribute || 'sys-handleelement'
-        },
 		// functions
+        _getAttributeName = function (name) {
+			if (typeof name !== 'string') {
+				new Error('Stencil.js Error: Attribute name must be a string');
+				return undefined;
+			};
+			var constants = {
+				IF: 'sys-if',
+				LISTENER: 'sys-listener',
+				DATA: 'sys-data',
+				TEMPLATE: 'sys-template',
+				INCLUDE: 'sys-include',
+				CONVERT: 'sys-convertdata',
+				HANDLE: 'sys-handleelement'
+			};
+            return constants[name.toUpperCase()];
+        },
         _pattern = function () {
 			return /\{\{.*\}\}/gmi;
 		},
@@ -40,7 +47,7 @@ var Stencil = function (templatesFileLocation, options) {
 			if (typeof document.defaultView.addEventListener === 'function') {
 				return function (obj, evt, func) {
 					if (!_isDOMElement(obj) || typeof evt !== 'string' || typeof func !== 'function') {
-						new Error('listener not attached');
+						new Error('Stencil.js Error: Listener not attached');
 					} else {
 						var events = evt.split(','),
 							i = events.length;
@@ -53,7 +60,7 @@ var Stencil = function (templatesFileLocation, options) {
 			} else if (typeof document.attachEvent === 'function') {
 				return function (obj, evt, func) {
 					if (!isDOMElement(obj) || typeof evt !== 'string' || typeof func !== 'function') {
-						new Error('listener not attached');
+						new Error('Stencil.js Error: Listener not attached');
 					} else {
 						var events = evt.split(','),
 							i = events.length;
@@ -66,7 +73,7 @@ var Stencil = function (templatesFileLocation, options) {
 			} else {
 				return function (obj, evt, func) {
 					if (!isDOMElement(obj) || typeof evt !== 'string' || typeof func !== 'function') {
-						new Error('listener not attached');
+						new Error('Stencil.js Error: Listener not attached');
 					} else {
 						var events = evt.split(','),
 							i = events.length;
@@ -82,7 +89,7 @@ var Stencil = function (templatesFileLocation, options) {
 			if (typeof document.defaultView.removeEventListener === 'function') {
 				return function (obj, evt, func) {
 					if (!isDOMElement(obj) || typeof evt !== 'string' || typeof func !== 'function') {
-						new Error('listener not attached');
+						new Error('Stencil.js Error: Listener not attached');
 					} else {
 						var events = evt.split(','),
 							i = events.length;
@@ -95,7 +102,7 @@ var Stencil = function (templatesFileLocation, options) {
 			} else if (typeof document.detachEvent === 'function') {
 				return function (obj, evt, func) {
 					if (!isDOMElement(obj) || typeof evt !== 'string' || typeof func !== 'function') {
-						new Error('listener not attached');
+						new Error('Stencil.js Error: Listener not attached');
 					} else {
 						var events = evt.split(','),
 							i = events.length;
@@ -108,7 +115,7 @@ var Stencil = function (templatesFileLocation, options) {
 			} else {
 				return function (obj, evt) {
 					if (!isDOMElement(obj) || typeof evt !== 'string') {
-						new Error('listener not attached');
+						new Error('Stencil.js Error: Listener not attached');
 					} else {
 						var events = evt.split(','),
 							i = events.length;
@@ -124,7 +131,7 @@ var Stencil = function (templatesFileLocation, options) {
             if (typeof _templates[name] !== 'object' || // template object found
                 typeof _templates[name].nodeType !== 'number' ||
                 _templates[name].nodeType !== 1) { // template is a DOM element
-                new Error('template not found');
+                new Error('Stencil.js Error: Template not found');
                 return false;
             }
             return _templates[name].cloneNode(true);
@@ -134,9 +141,6 @@ var Stencil = function (templatesFileLocation, options) {
         },
         _clearPattern = function (string) {
             return string.replace(_pattern(), '');
-        },
-        _getConstant = function (name) {
-            return _constants[name];
         },
 		_create = function (templateName) {
 			var temporary = typeof templateName === 'string' ? _getTemplate(templateName) : templateName,
@@ -180,40 +184,40 @@ var Stencil = function (templatesFileLocation, options) {
 			return text;
 		},
 		_replaceNodeAttributes = function (node, dataitem) {
-			var iterate = 0,
-				ifAttribute = _getConstant('ifAttribute'),
-				listenerAttribute = _getConstant('listenerAttribute'),
-				handleelementAttribute = _getConstant('handleelementAttribute'),
-				includeAttribute = _getConstant('includeAttribute'),
-				convertdataAttribute = _getConstant('convertdataAttribute'),
-				convertdata;
 			if (typeof node.attributes === 'object' && node.attributes !== null) {
-				convertdata = dataitem[node.getAttribute(_getConstant('convertdataAttribute'))];
+				var iterate = node.attributes.length,
+					attributeNames = {
+						'if': _getAttributeName('if'),
+						'listener': _getAttributeName('listener'),
+						'handle': _getAttributeName('handle'),
+						'include': _getAttributeName('include'),
+						'convert': _getAttributeName('convert'),
+					},
+					convertdata = dataitem[node.getAttribute(attributeNames['convert'])];
 				if (typeof convertdata === 'function') {
 					dataitem = _convertAndMergeData(dataitem, convertdata(dataitem));
 				}
-				iterate = node.attributes.length;
 				while (iterate--) {
 					switch (node.attributes[iterate].name) {
-						case (ifAttribute):
-							if (dataitem[_removeCurlyBrackets(node.getAttribute(ifAttribute))] === false) {
+						case (attributeNames['if']):
+							if (dataitem[_removeCurlyBrackets(node.getAttribute(attributeNames['if']))] === false) {
 								node.parentNode.removeChild(node);
 							} else {
-								node.removeAttribute(ifAttribute);
+								node.removeAttribute(attributeNames['if']);
 							}
 							break;
-						case (listenerAttribute):
-							_addHandler(node, node.getAttribute(listenerAttribute), dataitem);
-							node.removeAttribute(listenerAttribute);
+						case (attributeNames['listener']):
+							_addHandler(node, node.getAttribute(attributeNames['listener']), dataitem);
+							node.removeAttribute(attributeNames['listener']);
 							break;
-						case (handleelementAttribute):
-							codeafter = dataitem[node.getAttribute(handleelementAttribute)]
+						case (attributeNames['handle']):
+							codeafter = dataitem[node.getAttribute(attributeNames['handle'])]
 							if (typeof codeafter === 'function') {
 								codeafter(node);
 							}
 							break;
-						case (includeAttribute):
-							node.appendChild(Stencil.get(node.getAttribute(includeAttribute), dataitem));
+						case (attributeNames['include']):
+							node.appendChild(Stencil.get(node.getAttribute(attributeNames['include']), dataitem));
 							break;
 						default:
 							_replaceNodeAttribute(node, node.attributes[iterate].name, dataitem);
@@ -244,7 +248,7 @@ var Stencil = function (templatesFileLocation, options) {
 				// TEXT_NODE
 				_replaceNodeValue(element, dataitem);
 			} else {
-				if (element.nodeType === 1 && typeof element.getAttribute(_getConstant('dataAttribute')) === 'string') {
+				if (element.nodeType === 1 && typeof element.getAttribute(_getAttributeName('data')) === 'string') {
 					_createCycle(element, dataitem);
 				} else {
 					if (element.nodeType !== 11) {
@@ -269,10 +273,10 @@ var Stencil = function (templatesFileLocation, options) {
 			if (typeof dataitem !== 'object') {
 				return false;
 			}
-			var dataArray = dataitem[cycleElement.getAttribute(_getConstant('dataAttribute'))],
-				template = cycleElement.getAttribute(_getConstant('templateAttribute')),
-				parent = cycleElement.parentNode,
-				convertdata = dataitem[cycleElement.getAttribute(_getConstant('convertdataAttribute'))];
+			var dataArray = dataitem[cycleElement.getAttribute(_getAttributeName('data'))],
+				template = cycleElement.getAttribute(_getAttributeName('template')),
+				convertdata = dataitem[cycleElement.getAttribute(_getAttributeName('convert'))],
+				parent = cycleElement.parentNode;
 			if (typeof dataArray.length === 'number') {
 				var frag = _createList(template, dataArray, convertdata);
 				parent.replaceChild(frag, cycleElement);
@@ -311,14 +315,18 @@ var Stencil = function (templatesFileLocation, options) {
         XHR.send();
     })(_templatesFileLocation);
     return {
-		get: function (templateName, dataitem) {
-			return _nodeReplacements(_create(templateName), dataitem);
+		get: function (templateName, dataitem, codeafter) {
+			if (typeof codeafter === 'function') {
+				return codeafter(_nodeReplacements(_create(templateName), dataitem));
+			} else {
+				return _nodeReplacements(_create(templateName), dataitem);
+			}
 		},
-		append: function (parent, templateName, dataitem) {
+		append: function (parent, templateName, dataitem, codeafter) {
 			parent = typeof parent === 'string' ? document.querySelector(parent) : parent;
 			return parent.appendChild(this.get(templateName, dataitem));
 		},
-		clearAndAppend: function (parent, templateName, dataitem) {
+		clearAndAppend: function (parent, templateName, dataitem, codeafter) {
 			parent = typeof parent === 'string' ? document.querySelector(parent) : parent;
 			parent.innerHTML = '';
 			return this.append(parent, templateName, dataitem);
@@ -326,4 +334,9 @@ var Stencil = function (templatesFileLocation, options) {
 	};
 };
 Stencil = Stencil();
-// Stencil = Stencil('Templates.html', { templateTagName: 'template' });
+/* IMPLEMENT:
+ * Stencil = Stencil('Templates.html', { templateTagName: 'template' });
+ */
+/* EXAMPLE:
+ * Stencil.append('#myDiv', 'templateName', {}, Translate);
+ */
