@@ -1,5 +1,5 @@
 /*!
- * Stencil JavaScript Templating Library v1.0.3
+ * Stencil JavaScript Templating Engine v1.0.3
  * git://github.com/watermelonbunny/Stencil.git
  * Watermelonbunny
  */
@@ -16,6 +16,7 @@ var Stencil = function (templatesFileLocation, options) {
 				'DOCUMENT_FRAGMENT_NODE': 11
 			};
 			return function (node, nodeType) {
+				nodeType = nodeType.toUpperCase();
 				return typeof node.nodeType === 'number' && node.nodeType === nodeTypes[nodeType];
 			};
 		})(),
@@ -313,33 +314,34 @@ var Stencil = function (templatesFileLocation, options) {
 			}
 			return fragment;
 		};
+	// load templates document
 	(function (templatesFileLocation) {
         var XHR = new XMLHttpRequest(),
 			doc = document.implementation.createHTMLDocument('TemplatesDocument'),
 			templatesArray = [],
 			i = 0;
-        XHR.open('GET', templatesFileLocation, false); // sync load
+        XHR.open('GET', templatesFileLocation, false); // sync load (wait for load event)
         XHR.setRequestHeader('Content-Type', 'text/html');
         XHR.onload = function (evt) {
             if (XHR.readyState === 4 && (XHR.status === 200 || XHR.status === 0)) { // 0 for localhost
-                doc.body.innerHTML = XHR.responseText;
+                doc.body.innerHTML = XHR.responseText; // parse the HTML
                 templatesArray = doc.getElementsByTagName(_templateTagName);
                 i = templatesArray.length;
                 while (i--) {
+					// keep the DOM Elements in a nicely named array
                     _templates[templatesArray[i].getAttribute('name')] = templatesArray[i];
                 }
-                doc = null; // destroy the doc, keep the DOM Elements
+                doc = null; // destroy the doc
             }
         }
         XHR.send();
     })(_templatesFileLocation);
     return {
 		get: function (templateName, dataitem, runcode) {
-		    if (typeof runcode === 'function') {
-		        return runcode(_nodeReplacements(_create(templateName), dataitem));
-		    } else {
-		        return _nodeReplacements(_create(templateName), dataitem);
-		    }
+			runcode = typeof runcode === 'function' ? runcode : function (args) {
+				return args;
+			};
+			return runcode(_nodeReplacements(_create(templateName), dataitem));
 		},
 		append: function (parent, templateName, dataitem, runcode) {
 			parent = typeof parent === 'string' ? document.querySelector(parent) : parent;
