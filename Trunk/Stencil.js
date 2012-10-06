@@ -366,6 +366,14 @@ var Stencil = function (templatesFileLocation, options) {
             runcode = _meOrNothing(runcode);
             return runcode(_nodeReplacements(_create(templateName), dataitem));
         },
+        insert: function (parent, templateName, dataitem, runcode) {
+            parent = _getElementOrQuery(parent);
+            if (parent.childNodes.length > 0) {
+                return _getElementOrQuery(parent).insertBefore(this.get(templateName, dataitem, runcode), parent.firstChild);
+            } else {
+                return this.append(parent, templateName, dataitem, runcode);
+            }
+        },
         append: function (parent, templateName, dataitem, runcode) {
             return _getElementOrQuery(parent).appendChild(this.get(templateName, dataitem, runcode));
         },
