@@ -314,7 +314,7 @@ var Stencil = function (templatesFileLocation, options) {
             if (typeof dataitem !== 'object') {
                 return false;
             }
-            var dataArray = dataitem[cycleElement.getAttribute(_getConstants('data'))],
+            var dataArray = dataitem[cycleElement.getAttribute(_getConstants('data'))] || [],
                 template = cycleElement.getAttribute(_getConstants('template')),
                 convertdata = dataitem[cycleElement.getAttribute(_getConstants('convert'))],
                 parent = cycleElement.parentNode;
@@ -363,6 +363,7 @@ var Stencil = function (templatesFileLocation, options) {
     // Exposed (and priviliged) functions
     return {
         get: function (templateName, dataitem, runcode) {
+            dataitem = dataitem || {};
             runcode = _meOrNothing(runcode);
             return runcode(_nodeReplacements(_create(templateName), dataitem));
         },
