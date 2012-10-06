@@ -1,0 +1,78 @@
+* { margin:0; padding:0; border:0; }
+html, body { height:100%; }
+body {
+	font:normal 13px/16px sans-serif;
+	background:#eaeaea;
+	color:black; text-shadow:0 1px 0 white;
+}
+h1, h2, h3, h4, h5, h6 {
+	font-family: 'Oswald', sans-serif;
+	font-weight:normal;
+}
+h1, h2, h3, h4, h5, h6,
+p, ul, ol, code {
+    margin-bottom:.5em;
+}
+h1 {
+	font-size:21px; line-height:24px;
+}
+h1, h2 {
+    text-transform:capitalize;
+}
+ol li, ul li {
+    margin-left:20px;
+}
+.center {
+	text-align:center;
+}
+.seperator {
+	height:0px;
+	border-top:1px dashed rgba(0, 0, 0, .2);
+	border-bottom:1px dashed white;
+	margin:10px 0;
+}
+.semi_seperator {
+	height:0px;
+	border-top:1px dashed rgba(0, 0, 0, .05);
+	border-bottom:1px dashed rgba(255, 255, 255, .5);
+	margin:5px 0;
+}
+code {
+	display:block;
+	white-space:pre-wrap;
+	background:rgba(255, 255, 255, .5);
+	padding:5px;
+	margin:5px 0;
+	box-shadow:0 0 1px black;
+}
+code strong {
+	background:white;
+}
+.outer_wrap {
+	position:relative;
+	max-width:960px;
+	min-height:100%;
+	margin:0 auto;
+	box-shadow:0 0 50px -30px rgba(0, 0, 0, .5);
+}
+.inner_wrap {
+	padding:10px 10px 16px;
+}
+a.github {
+	text-decoration:none;
+	color:#666; text-shadow:0 -1px 0 white;
+	font-weight:bold;
+	display:inline-block;
+	padding:2px 5px 2px 25px;
+	background:rgba(255, 255, 255, .5) url(http://github.com/favicon.ico) 3px center no-repeat;
+	box-shadow:inset 0 20px 20px -20px rgba(0, 0, 0, .3),
+				0 0 2px rgba(0, 0, 0, .7),
+				0 6px 5px -5px rgba(0, 0, 0, .3);
+	border-radius:15px;
+}
+.footer {
+	position:absolute;
+	bottom:0; width:100%;
+	text-align:center;
+}
+.footer img { vertical-align:bottom; }

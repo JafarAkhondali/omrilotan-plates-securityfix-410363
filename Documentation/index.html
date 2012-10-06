@@ -3,78 +3,7 @@
 	<head>
 		<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
 		<title>Stencil = Javascript Templating Engine</title>
-		<style>
-* { margin:0; padding:0; border:0; }
-html, body { height:100%; }
-body {
-	font:normal 13px/16px sans-serif;
-	background:#eaeaea;
-	color:black; text-shadow:0 1px 0 white;
-}
-h1, h2, h3, h4, h5, h6 {
-	font-family: 'Oswald', sans-serif;
-	font-weight:normal;
-	margin-bottom:.5em;
-}
-h1 {
-	font-size:21px; line-height:24px;
-}
-h1, h2 {
-    text-transform:capitalize;
-}
-ol li {
-    margin-left:20px;
-    text-indent:20px;
-}
-.center {
-	text-align:center;
-}
-.seperator {
-	height:0px;
-	border-top:1px dashed rgba(0, 0, 0, .2);
-	border-bottom:1px dashed white;
-	margin:10px 0;
-}
-code {
-	display:block;
-	white-space:pre-wrap;
-	background:rgba(255, 255, 255, .5);
-	padding:5px;
-	margin:5px 0;
-	box-shadow:0 0 1px black;
-}
-code strong {
-	background:white;
-}
-.outer_wrap {
-	position:relative;
-	max-width:960px;
-	min-height:100%;
-	margin:0 auto;
-	box-shadow:0 0 50px -30px rgba(0, 0, 0, .5);
-}
-.inner_wrap {
-	padding:10px 10px 16px;
-}
-a.github {
-	text-decoration:none;
-	color:#666; text-shadow:0 -1px 0 white;
-	font-weight:bold;
-	display:inline-block;
-	padding:2px 5px 2px 25px;
-	background:rgba(255, 255, 255, .5) url(http://github.com/favicon.ico) 3px center no-repeat;
-	box-shadow:inset 0 20px 20px -20px rgba(0, 0, 0, .3),
-				0 0 2px rgba(0, 0, 0, .7),
-				0 6px 5px -5px rgba(0, 0, 0, .3);
-	border-radius:15px;
-}
-.footer {
-	position:absolute;
-	bottom:0; width:100%;
-	text-align:center;
-}
-.footer img { vertical-align:bottom; }
-		</style>
+		<link rel='stylesheet' href='styles.css' />
 	</head>
 	<body>
 		<div class='outer_wrap'>
@@ -87,13 +16,32 @@ a.github {
 				<div class='seperator'></div>
 				<h2>overview</h2>
                 <p>
-                    Once initialized, Stencil exposes three methods;
-                    <ol>
-                        <li>
-                            <samp>get</samp> is the first and most important function. Both the other methods (<samp>append</samp> and <samp>insert</samp>) call it
-                        </li>
-                    </ol>
+                    Once initialized, Stencil exposes four methods;
                 </p>
+                <ol>
+                    <li>
+                        <samp>get</samp>
+                    </li>
+                    <li>
+                        <samp>append</samp>
+                    </li>
+                    <li>
+                        <samp>insert</samp>
+                    </li>
+                    <li>
+                        <samp>clearAndAppend</samp>
+                    </li>
+                </ol>
+                <div class='semi_seperator'></div>
+                <ol>
+                    <li>
+                        <h3>the <samp>get</samp> method</h3>
+                        <p>
+                            <samp>get</samp> is the first and most important function. All the other methods (<samp>append</samp>, <samp>insert</samp> and <samp>clearAndAppend</samp>) eventually call it.<br />
+                            It expects 
+                        </p>
+                    </li>
+                </ol>
                 <div class='seperator'></div>
 				<h2>markup examples</h2>
 				<p>
@@ -115,102 +63,8 @@ a.github {
 				<img src='data:image/gif;base64,R0lGODlhEAAQAPcGAEOFA6IKZSJEAf8Amf///zNmAP///wcHBwgICAkJCQoKCgsLCwwMDA0NDQ4ODg8PDxAQEBERERISEhMTExQUFBUVFRYWFhcXFxgYGBkZGRoaGhsbGxwcHB0dHR4eHh8fHyAgICEhISIiIiMjIyQkJCUlJSYmJicnJygoKCkpKSoqKisrKywsLC0tLS4uLi8vLzAwMDExMTIyMjMzMzQ0NDU1NTY2Njc3Nzg4ODk5OTo6Ojs7Ozw8PD09PT4+Pj8/P0BAQEFBQUJCQkNDQ0REREVFRUZGRkdHR0hISElJSUpKSktLS0xMTE1NTU5OTk9PT1BQUFFRUVJSUlNTU1RUVFVVVVZWVldXV1hYWFlZWVpaWltbW1xcXF1dXV5eXl9fX2BgYGFhYWJiYmNjY2RkZGVlZWZmZmdnZ2hoaGlpaWpqamtra2xsbG1tbW5ubm9vb3BwcHFxcXJycnNzc3R0dHV1dXZ2dnd3d3h4eHl5eXp6ent7e3x8fH19fX5+fn9/f4CAgIGBgYKCgoODg4SEhIWFhYaGhoeHh4iIiImJiYqKiouLi4yMjI2NjY6Ojo+Pj5CQkJGRkZKSkpOTk5SUlJWVlZaWlpeXl5iYmJmZmZqampubm5ycnJ2dnZ6enp+fn6CgoKGhoaKioqOjo6SkpKWlpaampqenp6ioqKmpqaqqqqurq6ysrK2tra6urq+vr7CwsLGxsbKysrOzs7S0tLW1tba2tre3t7i4uLm5ubq6uru7u7y8vL29vb6+vr+/v8DAwMHBwcLCwsPDw8TExMXFxcbGxsfHx8jIyMnJycrKysvLy8zMzM3Nzc7Ozs/Pz9DQ0NHR0dLS0tPT09TU1NXV1dbW1tfX19jY2NnZ2dra2tvb29zc3N3d3d7e3t/f3+Dg4OHh4eLi4uPj4+Tk5OXl5ebm5ufn5+jo6Onp6erq6uvr6+zs7O3t7e7u7u/v7/Dw8PHx8fLy8vPz8/T09PX19fb29vf39/j4+Pn5+fr6+vv7+/z8/P39/f7+/v///yH5BAEAAAYALAAAAAAQABAAAAhaAA0IHEiwYMEABgUYNBBgAMKBAgooPOiQYMSJBBtWNBBR4sKGAkJeXMixgMmTGC2eXOmxYEcAMAGYTCkwosyTMmnWZNlyoUiRJCGafBi0Y4GNJI32TDizY8qAADs=' />
 			</div>
 		</div>
+        <script src='handlePage.js'></script>
 		<script>
-// fonts
-(function () {
-	var fontStyleSheet = document.createElement('link'),
-		head = document.head || document.getElementsByTagName('head')[0];
-	fontStyleSheet.setAttribute('rel', 'stylesheet');
-	fontStyleSheet.setAttribute('href', 'http://fonts.googleapis.com/css?family=Oswald:300&subset=latin,latin-ext');
-	head.appendChild(fontStyleSheet);
-})();
-
-(function () {
-    // use feature detect to branch this handler
-    if (typeof window.addEventListener === 'function') {
-        addListener = function (ele, evt, func) {
-            if (typeof evt === 'string') {
-                ele.addEventListener(evt, func);
-            } else {
-                for (var i = 0, loops = evt.length; i < loops; i++) {
-                    ele.addEventListener(evt[i], func);
-                }
-            }
-            return ele;
-        };
-        removeListener = function (ele, evt, func) {
-            if (typeof evt === 'string') {
-                ele.removeEventListener('on' + evt, func);
-            } else {
-                for (var i = 0, loops = evt.length; i < loops; i++) {
-                    ele.removeEventListener('on' + evt[i], func);
-                }
-            }
-            return ele;
-        };
-    } else if (typeof document.attachEvent === 'function') {
-        addListener = function (ele, evt, func) {
-            if (typeof evt === 'string') {
-                ele.attachEvent('on' + evt, func);
-            } else {
-                for (var i = 0, loops = evt.length; i < loops; i++) {
-                    ele.attachEvent('on' + evt[i], func);
-                }
-            }
-            return ele;
-        };
-        removeListener = function (ele, evt, func) {
-            if (typeof evt === 'string') {
-                ele.detachEvent(evt, func);
-            } else {
-                for (var i = 0, loops = evt.length; i < loops; i++) {
-                    ele.detachEvent(evt[i], func);
-                }
-            }
-            return ele;
-        };
-    } else {
-        addListener = function (ele, evt, func) {
-            if (typeof evt === 'string') {
-                ele['on' + evt] = func;
-            } else {
-                for (var i = 0, loops = evt.length; i < loops; i++) {
-                    ele['on' + evt[i]] = func;
-                }
-            }
-            return ele;
-        };
-        removeListener = function (ele, evt, func) {
-            if (typeof evt === 'string') {
-                ele['on' + evt] = null;
-            } else {
-                for (var i = 0, loops = evt.length; i < loops; i++) {
-                    ele['on' + evt[i]] = null;
-                }
-            }
-            return ele;
-        };
-    }
-})();
-// open links in a new tab
-var convertAHref = function (element) {
-	element = element || document;
-	var a = element.getElementsByTagName('a'),
-		i = a.length;
-	while (i--){
-		(function (ele) {
-			addListener(ele, 'click', function (evt) {
-				evt = evt || window.event;
-				window.open(ele.href, 'external_link');
-				evt.returnValue = false;
-				evt.cancelBubble = true;
-				evt.preventDefault();
-				evt.stopPropagation();
-				return false;
-			});
-		})(a[i]);
-	}
-};
 convertAHref();
 		</script>
 	</body>
