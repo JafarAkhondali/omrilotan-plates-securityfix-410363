@@ -48,6 +48,9 @@ code {
 code strong {
 	background:white;
 }
+samp {
+    white-space:pre-wrap;
+}
 .outer_wrap {
 	position:relative;
 	max-width:960px;

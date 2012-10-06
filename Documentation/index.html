@@ -33,30 +33,62 @@
                     </li>
                 </ol>
                 <div class='semi_seperator'></div>
-                <ol>
-                    <li>
-                        <h3>the <samp>get</samp> method</h3>
-                        <p>
-                            <samp>get</samp> is the first and most important function. All the other methods (<samp>append</samp>, <samp>insert</samp> and <samp>clearAndAppend</samp>) eventually call it.<br />
-                            It expects 
-                        </p>
-                    </li>
-                </ol>
-                <div class='seperator'></div>
-				<h2>markup examples</h2>
-				<p>
-                    a basic template looks like this:
-                    <code>&lt;template name="my_template">
-	&lt;div>{{ text_here }}&lt;/div>
-&lt;/template></code>
-                </p>
-				<p>
-                    so the javascript to return a document fragment containing a clone of the contents of this template with the 'text_here' replaced to a different value will be:
-                    <code>var newFragment = Stencil.get("my_template", { "text_here": "real text here" });</code>
-                </p>
                 <p>
-                    newFragment will be a document fragment containing the div with the value for 'text_here' key:
-                    <code>&lt;div>real text here&lt;/div></code>
+                    <h3>the <samp>get</samp> method</h3>
+                    <p>
+                        <samp>get</samp> is the first and most important function. All the other methods (<samp>append</samp>, <samp>insert</samp> and <samp>clearAndAppend</samp>) eventually call it.<br />
+                        It expects up to 3 arguments; <samp>templateName, dataitem, runcode</samp>.<br />
+                        it returns a <em>document fragment node</em> which you should append to the document yourself.<br />
+                    </p>
+                    <ol>
+                        <li>
+                            The <samp>templateName</samp> argument is mandatory and contains the name on the template identified in the templates HTML document: <samp>&lt;template name="my_template"></samp>. the method will return a fragment containing the first generation child elements respectively and their offsprings.<br />
+                        </li>
+                        <li>
+                            The <samp>dataitem</samp> argument is optional, and is an Object containing data which the template engine will relate while processing the template. For instance, a node which looks like this: <samp>{{ myText }}</samp> will look for the <samp>dataitem['myText']</samp> member and will replace it with it's value.
+                            <h4>Example:</h4>
+                            <p>
+                                templates.html:
+                                <code>&lt;template name="my_template">
+        &lt;div>
+            {{ myText }}
+        &lt;/div>
+    &lt;/template></code>
+                            </p>
+                            <p>
+                                on page script:
+                                <code>var dataitem = { 'myText': 'hello, world' };
+    var myFragment = Stencil.get('my_template', dataitem);</code>
+                            </p>
+                            <p>eventual <samp>myFragment</samp> markup:
+                                <code>&lt;div>
+        hello, world
+    &lt;/div></code>
+                            </p>
+                        </li>
+                        <li>
+                            The <samp>runcode</samp> argument is optional, and excepts a method which executes after the fragment is ready and exepts it as it's single argument
+                            <code>runcode = function (fragment){
+    doSomethingWith(fragment);
+}</code>
+                        </li>
+                    </ol>
+                </p>
+                <div class='semi_seperator'></div>
+                <p>
+                    <h3>the <samp>append</samp>, <samp>insert</samp> and <samp>clearAndAppend</samp> methods</h3>
+                    <p>
+                        Each one of these methods expects up to 4 arguments. Where the last 3 are the <samp>get</samp> method 3 arguments, the first argument is either a DOM Element or a query selector (e.g. <samp>'#my_div'</samp>).
+                    </p>
+                    <p>
+                        <samp>append</samp> appends the fragment to the DOM Element
+                    </p>
+                    <p>
+                        <samp>insert</samp> inserts the fragment to the DOM Element at the first position possible
+                    </p>
+                    <p>
+                        <samp>clearAndAppend</samp> clears the DOM Element then appends the fragment to it
+                    </p>
                 </p>
 			</div>
 			<div class='footer'>
