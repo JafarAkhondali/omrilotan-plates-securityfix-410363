@@ -43,7 +43,7 @@ var Stencil = function (templatesFileLocation, options) {
                 return element;
             } else if (typeof element === 'string') {
                 returnElement = document.querySelector(element);
-                return _getElementOrQuery(element);
+                return _getElementOrQuery(returnElement);
             } else {
                 new Error('Stencil.js Error: unable to obtain element');
             }
@@ -353,7 +353,12 @@ var Stencil = function (templatesFileLocation, options) {
                 doc = null; // destroy the doc
             }
         }
-        XHR.send();
+        try {
+            XHR.send();
+        } catch (error) {
+            debugger;
+            alert(error.name + ': ' + error.code + '\n\r' + error.message);
+        }
     })(_templatesFileLocation);
     // Exposed (and priviliged) functions
     return {
