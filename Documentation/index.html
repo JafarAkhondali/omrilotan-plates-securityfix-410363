@@ -66,7 +66,7 @@ var myFragment = Stencil.get("my_template", dataitem);</code>
                         </p>
                     </li>
                     <li>
-                        The <samp>runcode</samp> argument is optional, and excepts a method which executes after the fragment is ready and accepts it as it's single argument
+                        The <samp>runcode</samp> argument is optional, and accepts a method which executes after the fragment is ready and accepts it as it's single argument
                         <code>var runcode = function (fragment){
     doSomethingWith(fragment);
 };
@@ -126,7 +126,7 @@ var myFragment = Stencil.get("my_template", dataitem, runcode);</code>
                 <h3>the <samp>sys-listener</samp> attribute</h3>
                 <p>
                     <code>&lt;li sys-listener="click::myClickHanlder">{{ text }}&lt;/li></code>
-                    This attribute excepts a string composed of two parts. The two parts are seperated by a double colon <samp>::</samp>. The first part is one or more names of events the listener should apply an event listener to. Multiple listeners which hold the same result may look like this: <samp>sys-listener="keyup, keydown, change::handleText"</samp>.<br />
+                    This attribute accepts a string composed of two parts. The two parts are seperated by a double colon <samp>::</samp>. The first part is one or more names of events the listener should apply an event listener to. Multiple listeners which hold the same result may look like this: <samp>sys-listener="keyup, keydown, change::handleText"</samp>.<br />
                     The method may be a member of dataitem or not (e.g. <samp>"myApp.eventHandlers.myMethod"</samp>).
                 </p>
                 <div class='semi_seperator'></div>
