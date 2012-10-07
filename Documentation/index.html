@@ -8,11 +8,11 @@
 	<body>
 		<div class='outer_wrap'>
 			<div class='inner_wrap'>
-				<h1>Stencil = Javascript Templating Engine</h1>
-				<div class='seperator'></div>
-				<div class='center'>
-					<a class='github' href='https://github.com/watermelonbunny/Stencil'>project on github</a>
-				</div>
+				<h1>
+                    Stencil = Javascript Templating Engine
+                    <a class='github' href='https://github.com/watermelonbunny/Stencil'>project on github</a>
+                    <div class='clear'></div>
+                </h1>
 				<div class='seperator'></div>
 				<h2>overview</h2>
                 <p>
@@ -33,62 +33,144 @@
                     </li>
                 </ol>
                 <div class='semi_seperator'></div>
+                <h3>the <samp>get</samp> method</h3>
                 <p>
-                    <h3>the <samp>get</samp> method</h3>
-                    <p>
-                        <samp>get</samp> is the first and most important function. All the other methods (<samp>append</samp>, <samp>insert</samp> and <samp>clearAndAppend</samp>) eventually call it.<br />
-                        It expects up to 3 arguments; <samp>templateName, dataitem, runcode</samp>.<br />
-                        it returns a <em>document fragment node</em> which you should append to the document yourself.<br />
-                    </p>
-                    <ol>
-                        <li>
-                            The <samp>templateName</samp> argument is mandatory and contains the name on the template identified in the templates HTML document: <samp>&lt;template name="my_template"></samp>. the method will return a fragment containing the first generation child elements respectively and their offsprings.<br />
-                        </li>
-                        <li>
-                            The <samp>dataitem</samp> argument is optional, and is an Object containing data which the template engine will relate while processing the template. For instance, a node which looks like this: <samp>{{ myText }}</samp> will look for the <samp>dataitem['myText']</samp> member and will replace it with it's value.
-                            <h4>Example:</h4>
-                            <p>
-                                templates.html:
-                                <code>&lt;template name="my_template">
-        &lt;div>
-            {{ myText }}
-        &lt;/div>
-    &lt;/template></code>
-                            </p>
-                            <p>
-                                on page script:
-                                <code>var dataitem = { 'myText': 'hello, world' };
-    var myFragment = Stencil.get('my_template', dataitem);</code>
-                            </p>
-                            <p>eventual <samp>myFragment</samp> markup:
-                                <code>&lt;div>
-        hello, world
-    &lt;/div></code>
-                            </p>
-                        </li>
-                        <li>
-                            The <samp>runcode</samp> argument is optional, and excepts a method which executes after the fragment is ready and exepts it as it's single argument
-                            <code>runcode = function (fragment){
+                    <samp>get</samp> is the first and most important function. All the other methods (<samp>append</samp>, <samp>insert</samp> and <samp>clearAndAppend</samp>) eventually call it.<br />
+                    It expects up to 3 arguments; <samp>templateName, dataitem, runcode</samp>.<br />
+                    it returns a <em>document fragment node</em> which you should append to the document yourself.<br />
+                </p>
+                <ol>
+                    <li>
+                        The <samp>templateName</samp> argument is mandatory and contains the name on the template identified in the templates HTML document: <samp>&lt;template name="my_template"></samp>. the method will return a fragment containing the first generation child elements respectively and their offsprings.<br />
+                    </li>
+                    <li>
+                        The <samp>dataitem</samp> argument is optional, and is an Object containing data which the template engine will relate while processing the template. For instance, a node which looks like this: <samp>{{ myText }}</samp> will look for the <samp>dataitem["myText"]</samp> member and will replace it with it's value.
+                        <h4>Example:</h4>
+                        <p>
+                            templates.html:
+                            <code>&lt;template name="my_template">
+    &lt;div>
+        {{ myText }}
+    &lt;/div>
+&lt;/template></code>
+                        </p>
+                        <p>
+                            on page script:
+                            <code>var dataitem = { "myText": "hello, world" };
+var myFragment = Stencil.get("my_template", dataitem);</code>
+                        </p>
+                        <p>eventual <samp>myFragment</samp> markup:
+                            <code>&lt;div>
+    hello, world
+&lt;/div></code>
+                        </p>
+                    </li>
+                    <li>
+                        The <samp>runcode</samp> argument is optional, and excepts a method which executes after the fragment is ready and exepts it as it's single argument
+                        <code>var runcode = function (fragment){
     doSomethingWith(fragment);
-}</code>
-                        </li>
-                    </ol>
+};
+var myFragment = Stencil.get("my_template", dataitem, runcode);</code>
+                    </li>
+                </ol>
+                <div class='semi_seperator'></div>
+                <h3>the <samp>append</samp>, <samp>insert</samp> and <samp>clearAndAppend</samp> methods</h3>
+                <p>
+                    Each one of these methods expects up to 4 arguments. Where the last 3 are the <samp>get</samp> method 3 arguments, the first argument is either a DOM Element or a query selector (e.g. <samp>"#my_div"</samp>).
+                </p>
+                <p>
+                    <samp>append</samp> appends the fragment to the DOM Element
+                </p>
+                <p>
+                    <samp>insert</samp> inserts the fragment to the DOM Element at the first position possible
+                </p>
+                <p>
+                    <samp>clearAndAppend</samp> clears the DOM Element then appends the fragment to it
+                </p>
+				<div class='seperator'></div>
+				<h2>modifiers</h2>
+                <p>
+                    The templates may include system attributes which are used for modifying the data and markup.<br />
+                    These modifiers are
+                    <ul>
+                        <li><samp>sys-if</samp></li>
+                        <li><samp>sys-include</samp></li>
+                        <li><samp>sys-handleelement</samp></li>
+                        <li><samp>sys-listener</samp></li>
+                        <li><samp>sys-template</samp></li>
+                        <li><samp>sys-data</samp></li>
+                        <li><samp>sys-convertdata</samp></li>
+                    </ul>
                 </p>
                 <div class='semi_seperator'></div>
+                <h3>the <samp>sys-if</samp> attribute</h3>
                 <p>
-                    <h3>the <samp>append</samp>, <samp>insert</samp> and <samp>clearAndAppend</samp> methods</h3>
-                    <p>
-                        Each one of these methods expects up to 4 arguments. Where the last 3 are the <samp>get</samp> method 3 arguments, the first argument is either a DOM Element or a query selector (e.g. <samp>'#my_div'</samp>).
-                    </p>
-                    <p>
-                        <samp>append</samp> appends the fragment to the DOM Element
-                    </p>
-                    <p>
-                        <samp>insert</samp> inserts the fragment to the DOM Element at the first position possible
-                    </p>
-                    <p>
-                        <samp>clearAndAppend</samp> clears the DOM Element then appends the fragment to it
-                    </p>
+                    <code>&lt;div sys-if="bool">&lt;/div></code>
+                    this attribute will tell the script to search <samp>dataitem</samp> for the key specified in the value, convert it to boolean then decide whether or not the engine should render that element. return values of false, null, undefined, 0 or an empty string will cause the engine to skip the element. also because undefied converts to a false boolean, a missing member would do the same.
+                </p>
+                <div class='semi_seperator'></div>
+                <h3>the <samp>sys-include</samp> attribute</h3>
+                <p>
+                    <code>&lt;div sys-include="another_template">&lt;/div></code>
+                    this attribute will include another template in place of the element given this attribute (the element will be replaced). The other template will continue to use the same dataitem.
+                </p>
+                <div class='semi_seperator'></div>
+                <h3>the <samp>sys-handleelement</samp> attribute</h3>
+                <p>
+                    <code>&lt;div sys-handleelement="func">{{ text }}&lt;/div></code>
+                    This attribute expects a function which exepts the element holding this attribute as it's only argument. It will execute right after the element is generated but still in the stage of computations, before it joins the display (it's appended to the fragment but not the document).<br />
+                    The method may be a member of dataitem or not (e.g. <samp>"myApp.elementMethods.myMethod"</samp>).
+                </p>
+                <div class='semi_seperator'></div>
+                <h3>the <samp>sys-listener</samp> attribute</h3>
+                <p>
+                    <code>&lt;li sys-listener="click::myClickHanlder">{{ text }}&lt;/li></code>
+                    This attribute excepts a string composed of two parts. The two parts are seperated by a double colon <samp>::</samp>. The first part is one or more names of events the listener should apply an event listener to. Multiple listeners which hold the same result may look like this: <samp>sys-listener="keyup, keydown, change::handleText"</samp>.<br />
+                    The method may be a member of dataitem or not (e.g. <samp>"myApp.eventHandlers.myMethod"</samp>).
+                </p>
+                <div class='semi_seperator'></div>
+                <h3>the <samp>sys-template</samp> and <samp>sys-data</samp> attributes</h3>
+                <p>
+                    <code>&lt;div sys-template="list_item" sys-data="listData" sys-convertdata="convertData">&lt;/div></code>
+                    Those two attributes are a pair. In a case of repetitive data structures which require a representation such as lists, tables or grids, a sub-template may be used. the element holding the <samp>sys-template</samp> attribute will be replaces with 0 or more of the template named as it's value, following an array of dataitems represented by the <samp>sys-data</samp> attribute's value.
+                    In case of using these templates:
+                    <code>&lt;template name="list">
+	&lt;ol>
+		&lt;div sys-template="list_item" sys-data="listData">&lt;/div>
+	&lt;/ol>
+&lt;/template>
+&lt;template name="list_item">
+	&lt;li sys-listener="click::clickHanlder">{{ text }}&lt;/li>
+&lt;/template></code>
+                    list's data structure may look like this:
+                    <code>var dataitem = {
+    listData: [
+        {
+            text: "my text",
+            clickHanlder: function (evt) {
+                alert(evt.target.innerHTML);
+            }
+        },{
+            text: "my second text",
+            clickHanlder: function (evt) {
+                alert('hello again!');
+            }
+        }
+    ];
+};</code>
+                </p>
+                <div class='semi_seperator'></div>
+                <h3>the <samp>sys-convertdata</samp> attribute</h3>
+                <p>
+                    <code>&lt;div sys-convertdata="convertData">{{ text }}&lt;/div></code>
+                    <code>&lt;div sys-template="list_item" sys-data="listData" sys-convertdata="convertData">&lt;/div></code>
+                    This attribute will run the dataitem through a function (attribute's value) which may convert members of the dataitem. The function exepts the dataitem as it's only argument, the dataitem and the return object then get combined to fill in whatever members the converted dataitem did not cover but do exist on the dataitem.
+                </p>
+                <div class='semi_seperator'></div>
+                <h3>other attributes</h3>
+                <code>&lt;div class="my_div {{ dynamic_class }}">{{ text }}&lt;/div></code>
+                <p>
+                    all other attributes go through the same filters as text, and may have rewritable parts in their value.
                 </p>
 			</div>
 			<div class='footer'>

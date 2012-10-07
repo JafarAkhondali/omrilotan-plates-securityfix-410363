@@ -22,6 +22,9 @@ h1, h2 {
 ol li, ul li {
     margin-left:20px;
 }
+.clear {
+    clear:both;
+}
 .center {
 	text-align:center;
 }
@@ -49,7 +52,7 @@ code strong {
 	background:white;
 }
 samp {
-    white-space:pre-wrap;
+    white-space:nowrap;
 }
 .outer_wrap {
 	position:relative;
@@ -64,7 +67,7 @@ samp {
 a.github {
 	text-decoration:none;
 	color:#666; text-shadow:0 -1px 0 white;
-	font-weight:bold;
+	font-size:13px;
 	display:inline-block;
 	padding:2px 5px 2px 25px;
 	background:rgba(255, 255, 255, .5) url(http://github.com/favicon.ico) 3px center no-repeat;
@@ -72,6 +75,7 @@ a.github {
 				0 0 2px rgba(0, 0, 0, .7),
 				0 6px 5px -5px rgba(0, 0, 0, .3);
 	border-radius:15px;
+    float:right;
 }
 .footer {
 	position:absolute;
