@@ -356,7 +356,6 @@ var Stencil = function (templatesFileLocation, options) {
         try {
             XHR.send();
         } catch (error) {
-            debugger;
             alert(error.name + ': ' + error.code + '\n\r' + error.message);
         }
     })(_templatesFileLocation);
