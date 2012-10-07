@@ -342,7 +342,7 @@ var Stencil = function (templatesFileLocation, options) {
             if (reverse === true) {
                 while(loops--) {
                     convertdata = _meOrNothing(convertdata);
-                    fragment.appendChild(Stencil.get(template, _convertAndMergeData(dataArray[i], convertdata(dataArray[i]))));
+                    fragment.appendChild(Stencil.get(template, _convertAndMergeData(dataArray[loops], convertdata(dataArray[loops]))));
                 }
             } else {
                 for (; i < loops; i++) {
