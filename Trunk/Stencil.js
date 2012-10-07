@@ -385,10 +385,9 @@ var Stencil = function (templatesFileLocation, options) {
         }
     };
 };
-Stencil = Stencil('Templates.html', { templateTagName: 'template' });
-/* IMPLEMENT:
+/* INITIATE:
  * Stencil = Stencil('Templates.html', { templateTagName: 'template' });
  */
-/* EXAMPLE:
+/* EXAMPLE USAGE:
  * Stencil.append('#myDiv', 'templateName', {}, Translate);
  */

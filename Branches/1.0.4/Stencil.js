@@ -385,7 +385,6 @@ var Stencil = function (templatesFileLocation, options) {
         }
     };
 };
-Stencil = Stencil('Templates.html', { templateTagName: 'template' });
 /* IMPLEMENT:
  * Stencil = Stencil('Templates.html', { templateTagName: 'template' });
  */
