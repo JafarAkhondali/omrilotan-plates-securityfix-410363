@@ -66,7 +66,7 @@ var myFragment = Stencil.get("my_template", dataitem);</code>
                         </p>
                     </li>
                     <li>
-                        The <samp>runcode</samp> argument is optional, and excepts a method which executes after the fragment is ready and exepts it as it's single argument
+                        The <samp>runcode</samp> argument is optional, and excepts a method which executes after the fragment is ready and accepts it as it's single argument
                         <code>var runcode = function (fragment){
     doSomethingWith(fragment);
 };
@@ -119,7 +119,7 @@ var myFragment = Stencil.get("my_template", dataitem, runcode);</code>
                 <h3>the <samp>sys-handleelement</samp> attribute</h3>
                 <p>
                     <code>&lt;div sys-handleelement="func">{{ text }}&lt;/div></code>
-                    This attribute expects a function which exepts the element holding this attribute as it's only argument. It will execute right after the element is generated but still in the stage of computations, before it joins the display (it's appended to the fragment but not the document).<br />
+                    This attribute expects a function which accepts the element holding this attribute as it's only argument. It will execute right after the element is generated but still in the stage of computations, before it joins the display (it's appended to the fragment but not the document).<br />
                     The method may be a member of dataitem or not (e.g. <samp>"myApp.elementMethods.myMethod"</samp>).
                 </p>
                 <div class='semi_seperator'></div>
@@ -165,7 +165,7 @@ var myFragment = Stencil.get("my_template", dataitem, runcode);</code>
                 <p>
                     <code>&lt;div sys-convertdata="convertData">{{ text }}&lt;/div></code>
                     <code>&lt;div sys-template="list_item" sys-data="listData" sys-convertdata="convertData">&lt;/div></code>
-                    This attribute will run the dataitem through a function (attribute's value) which may convert members of the dataitem. The function exepts the dataitem as it's only argument, the dataitem and the return object then get combined to fill in whatever members the converted dataitem did not cover but do exist on the dataitem.
+                    This attribute will run the dataitem through a function (attribute's value) which may convert members of the dataitem. The function accepts the dataitem as it's only argument, the dataitem and the return object then get combined to fill in whatever members the converted dataitem did not cover but do exist on the dataitem.
                 </p>
                 <div class='semi_seperator'></div>
                 <h3>the <samp>sys-reverse</samp> attribute</h3>
