@@ -76,6 +76,13 @@ var Stencil = function (templatesFileLocation, options) {
             return string.replace(/\{\{( )*/gmi, '').replace(/( )*\}\}/gmi, '');
         },
         _stringToObject = function (string) {
+            if (typeof string !== 'string') {
+                if (typeof string === 'object') {
+                    return string;
+                } else {
+                    return null;
+                }
+            }
             var array = string.split('.'),
                 object = document.defaultView,
                 i = 0,
