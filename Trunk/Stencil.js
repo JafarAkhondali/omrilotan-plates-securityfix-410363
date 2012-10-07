@@ -1,5 +1,5 @@
 /*!
- * Stencil JavaScript Templating Engine v1.0.4
+ * Stencil JavaScript Templating Engine v1.0.5
  * git://github.com/watermelonbunny/Stencil.git
  * Watermelonbunny
  */
@@ -59,6 +59,7 @@ var Stencil = function (templatesFileLocation, options) {
                 'LISTENER_SEPERATOR': '::',
                 'DATA': 'sys-data',
                 'TEMPLATE': 'sys-template',
+                'REVERSE': 'sys-reverse',
                 'INCLUDE': 'sys-include',
                 'CONVERT': 'sys-convertdata',
                 'HANDLE': 'sys-handleelement'
@@ -310,26 +311,36 @@ var Stencil = function (templatesFileLocation, options) {
             }
             return dataitem;
         },
-        _createCycle = function (cycleElement, dataitem) {
+        _createCycle = function (cycleElement, dataitem, reverse) {
             if (typeof dataitem !== 'object') {
                 return false;
             }
             var dataArray = dataitem[cycleElement.getAttribute(_getConstants('data'))] || [],
                 template = cycleElement.getAttribute(_getConstants('template')),
+                reverseValue = cycleElement.getAttribute(_getConstants('reverse')),
+                reverse = dataitem[reverseValue] == true || _stringToObject(reverseValue) || typeof reverseValue === 'string' && _removeCurlyBrackets(reverseValue).toLowerCase() === 'true' ? true : false,
                 convertdata = dataitem[cycleElement.getAttribute(_getConstants('convert'))],
                 parent = cycleElement.parentNode;
             if (typeof dataArray.length === 'number') {
-                var frag = _createList(template, dataArray, convertdata);
+                var frag = _createList(template, dataArray, convertdata, reverse);
                 parent.replaceChild(frag, cycleElement);
             }
             return parent;
         },
-        _createList = function (template, dataArray, convertdata) {
+        _createList = function (template, dataArray, convertdata, reverse) {
             var fragment = document.createDocumentFragment();
             // check if it's as Array
-            for (var i = 0, loops = dataArray.length; i < loops; i++) {
-                convertdata = _meOrNothing(convertdata);
-                fragment.appendChild(Stencil.get(template, _convertAndMergeData(dataArray[i], convertdata(dataArray[i]))));
+            if (reverse === true) {
+                var i = dataArray.length;
+                while(i--) {
+                    convertdata = _meOrNothing(convertdata);
+                    fragment.appendChild(Stencil.get(template, _convertAndMergeData(dataArray[i], convertdata(dataArray[i]))));
+                }
+            } else {
+                for (var i = 0, loops = dataArray.length; i < loops; i++) {
+                    convertdata = _meOrNothing(convertdata);
+                    fragment.appendChild(Stencil.get(template, _convertAndMergeData(dataArray[i], convertdata(dataArray[i]))));
+                }
             }
             return fragment;
         };

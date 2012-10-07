@@ -167,6 +167,13 @@ var myFragment = Stencil.get("my_template", dataitem, runcode);</code>
                     This attribute will run the dataitem through a function (attribute's value) which may convert members of the dataitem. The function exepts the dataitem as it's only argument, the dataitem and the return object then get combined to fill in whatever members the converted dataitem did not cover but do exist on the dataitem.
                 </p>
                 <div class='semi_seperator'></div>
+                <h3>the <samp>sys-reverse</samp> attribute</h3>
+                <p>
+                    <code>&lt;div sys-template="list_item" sys-data="listData" sys-reverse="true">&lt;/div></code>
+                    This attributes refers to the cycle of submitting children to a parent. when this attribute exists and represent a true boolean, the children will append in reveres order. last data array member first and so on.<br />
+                    You may set the value to a member of the dataitem which converts into a boolean (false, null, undefined, 0 or an empty string translates to false), you may use a javascript object (myApp.conditions.doReverse) or you may just use the "true" or "false" strings.
+                </p>
+                <div class='semi_seperator'></div>
                 <h3>other attributes</h3>
                 <code>&lt;div class="my_div {{ dynamic_class }}">{{ text }}&lt;/div></code>
                 <p>
