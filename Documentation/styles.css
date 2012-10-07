@@ -77,6 +77,12 @@ a.github {
 	border-radius:15px;
     float:right;
 }
+a.github:hover {
+    text-shadow:0 1px 0 white;
+    box-shadow:inset 0 -20px 20px -20px rgba(0, 0, 0, .3),
+				0 0 2px rgba(0, 0, 0, .7),
+				0 6px 5px -5px rgba(0, 0, 0, .3);
+}
 .footer {
 	position:absolute;
 	bottom:0; width:100%;
