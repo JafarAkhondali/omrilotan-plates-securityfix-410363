@@ -19,6 +19,11 @@ exports.init = function (base, port) {
     base = base || process.cwd;
     port = port || 1337;
     http.createServer(function (request, response) {
+    if (path.normalize(decodeURI(request.url)) !== decodeURI(request.url)) {
+        response.statusCode = 403;
+        response.end();
+        return;
+    }
 
         var root = "",
             uri = root + url.parse(request.url).pathname,
